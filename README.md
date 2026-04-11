@@ -1,3 +1,4 @@
+markdown
 # ✅ TaskFlow - Task Management Web Application
 
 A full-stack task management web application with beautiful dashboard, real-time analytics, interactive graphs, and complete CRUD operations.
@@ -13,7 +14,7 @@ A full-stack task management web application with beautiful dashboard, real-time
 - Live Statistics (Total, Completed, Pending)
 - Interactive Graphs (Donut Chart, Pie Chart, Gauge Chart)
 - Filter Tasks (All / Pending / Completed)
-- Password Show/Hide Toggle (Eye / Monkey icon)
+- Password Show/Hide Toggle
 - Responsive Design
 
 ---
@@ -26,7 +27,6 @@ A full-stack task management web application with beautiful dashboard, real-time
 | Backend | Node.js, Express.js |
 | Database | MongoDB |
 | Charts | Chart.js |
-| Version Control | Git & GitHub |
 
 ---
 
@@ -47,19 +47,22 @@ A full-stack task management web application with beautiful dashboard, real-time
 - Node.js installed
 - MongoDB installed and running
 
-### Step 1: Install Backend Dependencies
-
-```bash
+**Step 1:** Install Backend Dependencies
+bash
 cd backend
 npm install
 
-
 Step 2: Start MongoDB
+
 bash
-mongod --dbpathStep 3: Start Backend Server
+mongod --dbpath C:\data\db
+
+Step 3: Start Backend Server
+
 bash
 node server.js
 Step 4: Open Dashboard
+
 Open dashboard.html in your browser
 
 📁 Project Structure
@@ -70,11 +73,7 @@ task-manager/
 ├── backend/
 │   ├── server.js       # Node.js backend API
 │   └── package.json    # Dependencies
-├── screenshots/        # Assignment screenshots
-└── README.md           # This file C:\data\db
+└── README.md           # This file
 
-SCRREEN SHOTS HERE
-https://drive.google.com/drive/folders/120OOEaZX3CGXxckvmrfExwT3LfHMh_Fe?usp=sharing
-
-
+SCREENSHOTS HERE-https://drive.google.com/drive/folders/120OOEaZX3CGXxckvmrfExwT3LfHMh_Fe?usp=sharing
 
