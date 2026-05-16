@@ -62,6 +62,30 @@
             border-color: #667eea;
         }
         
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-wrapper input {
+            width: 100%;
+            padding: 15px;
+            padding-right: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        
+        .eye-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 22px;
+            background: none;
+            border: none;
+        }
+        
         .btn {
             width: 100%;
             padding: 15px;
@@ -72,6 +96,7 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 10px;
         }
         
         .btn:hover {
@@ -80,7 +105,7 @@
         
         .switch-link {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 15px;
             color: #666;
         }
         
@@ -89,6 +114,23 @@
             text-decoration: none;
             font-weight: bold;
             cursor: pointer;
+        }
+        
+        .forgot-link {
+            text-align: right;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .forgot-link a {
+            color: #999;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .forgot-link a:hover {
+            color: #667eea;
         }
         
         .hidden {
@@ -102,6 +144,7 @@
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            display: none;
         }
         
         .success-message {
@@ -111,6 +154,21 @@
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            display: none;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            cursor: pointer;
+        }
+        
+        input[readonly] {
+            background: #f5f5f5;
         }
     </style>
 </head>
@@ -118,9 +176,10 @@
     <div class="container">
         <div class="logo">✨ TaskFlow</div>
         
-        <div id="errorMsg" class="error-message" style="display:none"></div>
-        <div id="successMsg" class="success-message" style="display:none"></div>
+        <div id="errorMsg" class="error-message"></div>
+        <div id="successMsg" class="success-message"></div>
         
+        <!-- Login Form -->
         <div id="loginForm">
             <h2>Welcome Back! 👋</h2>
             <div class="input-group">
@@ -129,7 +188,13 @@
             </div>
             <div class="input-group">
                 <label>🔒 Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
+                <div class="password-wrapper">
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                    <button class="eye-icon" onclick="togglePassword('loginPassword', this)">👁️</button>
+                </div>
+            </div>
+            <div class="forgot-link">
+                <a onclick="showForgotPassword()">Forgot Password?</a>
             </div>
             <button class="btn" onclick="handleLogin()">Login →</button>
             <div class="switch-link">
@@ -137,6 +202,7 @@
             </div>
         </div>
         
+        <!-- Sign Up Form -->
         <div id="signupForm" class="hidden">
             <h2>Create Account ✨</h2>
             <div class="input-group">
@@ -149,11 +215,54 @@
             </div>
             <div class="input-group">
                 <label>🔒 Password</label>
-                <input type="password" id="signupPassword" placeholder="Create a password">
+                <div class="password-wrapper">
+                    <input type="password" id="signupPassword" placeholder="Create a password">
+                    <button class="eye-icon" onclick="togglePassword('signupPassword', this)">👁️</button>
+                </div>
             </div>
             <button class="btn" onclick="handleSignup()">Sign up →</button>
             <div class="switch-link">
                 Already have an account? <a onclick="showLogin()">Login</a>
+            </div>
+        </div>
+        
+        <!-- Forgot Password Form -->
+        <div id="forgotForm" class="hidden">
+            <h2>Reset Password 🔒</h2>
+            <div class="input-group">
+                <label>📧 Email</label>
+                <input type="email" id="forgotEmail" placeholder="Enter your registered email" style="width:100%; padding:15px;">
+            </div>
+            <button class="btn" onclick="handleForgotPassword()">Send Reset Link →</button>
+            <div class="back-link">
+                <a onclick="showLogin()">← Back to Login</a>
+            </div>
+        </div>
+        
+        <!-- Reset Password Form -->
+        <div id="resetForm" class="hidden">
+            <h2>Set New Password 🔐</h2>
+            <div class="input-group">
+                <label>📧 Email</label>
+                <input type="email" id="resetEmail" readonly style="width:100%; padding:15px; background:#f5f5f5;">
+            </div>
+            <div class="input-group">
+                <label>🔒 New Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                    <button class="eye-icon" onclick="togglePassword('newPassword', this)">👁️</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>🔒 Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    <button class="eye-icon" onclick="togglePassword('confirmPassword', this)">👁️</button>
+                </div>
+            </div>
+            <button class="btn" onclick="handleResetPassword()">Reset Password →</button>
+            <div class="back-link">
+                <a onclick="showLogin()">← Back to Login</a>
             </div>
         </div>
     </div>
@@ -161,15 +270,48 @@
     <script>
         let users = JSON.parse(localStorage.getItem('users') || '[]');
         
+        // Toggle password visibility - Eye = hidden, Monkey = visible
+        function togglePassword(inputId, button) {
+            let input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.innerHTML = "🙈";
+            } else {
+                input.type = "password";
+                button.innerHTML = "👁️";
+            }
+        }
+        
         function showSignup() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('signupForm').classList.remove('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+            document.getElementById('resetForm').classList.add('hidden');
             hideMessages();
         }
         
         function showLogin() {
             document.getElementById('signupForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+            document.getElementById('resetForm').classList.add('hidden');
+            hideMessages();
+        }
+        
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('forgotForm').classList.remove('hidden');
+            document.getElementById('resetForm').classList.add('hidden');
+            hideMessages();
+        }
+        
+        function showResetPassword(email) {
+            document.getElementById('resetEmail').value = email;
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+            document.getElementById('resetForm').classList.remove('hidden');
             hideMessages();
         }
         
@@ -193,7 +335,7 @@
             successDiv.style.display = 'block';
             setTimeout(() => {
                 successDiv.style.display = 'none';
-            }, 2000);
+            }, 3000);
         }
         
         function handleSignup() {
@@ -245,6 +387,65 @@
                 }, 1000);
             } else {
                 showError('Invalid email or password!');
+            }
+        }
+        
+        function handleForgotPassword() {
+            const email = document.getElementById('forgotEmail').value;
+            
+            if (!email) {
+                showError('Please enter your email!');
+                return;
+            }
+            
+            const user = users.find(u => u.email === email);
+            
+            if (!user) {
+                showError('Email not found! Please sign up first.');
+                return;
+            }
+            
+            showSuccess(`Reset link sent to ${email}! Redirecting to reset form...`);
+            
+            setTimeout(() => {
+                showResetPassword(email);
+            }, 1500);
+        }
+        
+        function handleResetPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('resetEmail').value;
+            
+            if (!newPassword || !confirmPassword) {
+                showError('Please enter new password!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showError('Passwords do not match!');
+                return;
+            }
+            
+            if (newPassword.length < 4) {
+                showError('Password must be at least 4 characters!');
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.email === email);
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+                localStorage.setItem('users', JSON.stringify(users));
+                showSuccess('Password reset successfully! Please login with new password.');
+                
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                setTimeout(() => {
+                    showLogin();
+                }, 2000);
+            } else {
+                showError('User not found!');
             }
         }
     </script>
