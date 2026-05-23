@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>✨ TaskFlow - Modern Dashboard</title>
+    <title>TaskFlow - Smart Scheduler</title>
     
     <!-- Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -15,200 +15,258 @@
         
         body {
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at 10% 20%, rgb(0, 0, 0) 0%, rgb(64, 64, 64) 90%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
         }
         
-        /* Animated Background */
-        .bg-animation {
+        /* Animated floating shapes */
+        .shape {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .bg-animation div {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,107,107,0.3) 0%, rgba(255,107,107,0) 70%);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            animation: float 20s infinite;
+            pointer-events: none;
+            z-index: 0;
         }
         
-        .bg-animation div:nth-child(1) { top: 10%; left: -100px; animation-delay: 0s; }
-        .bg-animation div:nth-child(2) { bottom: 10%; right: -100px; animation-delay: 5s; background: radial-gradient(circle, rgba(78,205,196,0.3) 0%, rgba(78,205,196,0) 70%); }
-        .bg-animation div:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; animation-delay: 10s; background: radial-gradient(circle, rgba(118,75,162,0.2) 0%, rgba(118,75,162,0) 70%); }
+        .shape-1 { width: 300px; height: 300px; top: -100px; left: -100px; animation: float 20s infinite; }
+        .shape-2 { width: 200px; height: 200px; bottom: 50px; right: 50px; animation: float 25s infinite reverse; background: rgba(255, 255, 255, 0.15); }
+        .shape-3 { width: 150px; height: 150px; top: 40%; left: 80%; animation: float 18s infinite; }
+        .shape-4 { width: 400px; height: 400px; bottom: -150px; left: 20%; animation: float 30s infinite; background: rgba(255, 255, 255, 0.05); }
         
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(10deg); }
         }
         
-        /* Main Container */
         .dashboard {
-            max-width: 1400px;
+            max-width: 1000px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         
-        /* Glass Header */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.1);
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 25px 35px;
             margin-bottom: 25px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
         
-        .glass-header h1 {
-            font-size: 36px;
-            background: linear-gradient(135deg, #FFD166, #FF6B6B, #4ECDC4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.4);
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 50px;
+            color: #FFD166;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
         }
         
-        .glass-header p {
+        .logo p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .live-clock {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .clock-time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FFD166;
+            font-family: monospace;
+        }
+        
+        .clock-date {
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.8);
-            margin-top: 10px;
         }
         
-        /* Stats Row */
-        .stats-row {
+        /* Stats Cards */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 25px;
         }
         
         .stat-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 20px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s;
         }
         
         .stat-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
         }
         
         .stat-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            width: 55px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
         }
         
-        .stat-number {
-            font-size: 36px;
+        .stat-info h3 {
+            font-size: 28px;
+            color: white;
             font-weight: bold;
-            color: #FFD166;
         }
         
-        .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+        .stat-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
         }
         
-        /* Charts Row - 3 Circle Graphs */
-        .charts-row {
+        /* Single Chart Row */
+        .chart-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 25px;
             margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .chart-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
             border-radius: 25px;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         
         .chart-card:hover {
             transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
         
         .chart-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
+            color: white;
+            margin-bottom: 20px;
         }
         
         canvas {
-            max-height: 180px;
-            max-width: 180px;
+            max-height: 250px;
+            max-width: 250px;
             margin: 0 auto;
         }
         
         /* Add Task Section */
-        .add-task-card {
-            background: rgba(255, 255, 255, 0.95);
+        .add-task-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .add-task-card h3 {
+        .section-title {
+            color: white;
+            font-size: 18px;
             margin-bottom: 20px;
-            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .input-group {
+        .input-row {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
         
-        #taskInput {
+        .task-input {
+            flex: 2;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            font-size: 16px;
+            color: white;
+        }
+        
+        .task-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .task-input:focus {
+            outline: none;
+            border-color: #FFD166;
+        }
+        
+        .time-input {
             flex: 1;
             padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
             font-size: 16px;
-            transition: all 0.3s;
+            color: white;
+            cursor: pointer;
         }
         
-        #taskInput:focus {
-            outline: none;
-            border-color: #FF6B6B;
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        .time-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
         }
         
         .add-btn {
+            padding: 15px 30px;
             background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-            color: white;
-            padding: 15px 35px;
             border: none;
-            border-radius: 15px;
-            cursor: pointer;
+            border-radius: 20px;
+            color: white;
             font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s;
         }
         
         .add-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
         }
         
         /* Tasks Section */
-        .tasks-card {
-            background: rgba(255, 255, 255, 0.95);
+        .tasks-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .tasks-header {
@@ -219,17 +277,18 @@
             flex-wrap: wrap;
         }
         
-        .filter-group {
+        .filter-buttons {
             display: flex;
             gap: 10px;
         }
         
         .filter-btn {
             padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.15);
             border: none;
-            border-radius: 20px;
+            border-radius: 30px;
+            color: white;
             cursor: pointer;
-            background: #f0f0f0;
             transition: all 0.3s;
         }
         
@@ -238,46 +297,50 @@
             color: white;
         }
         
-        #taskList {
+        .task-list {
             list-style: none;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
         }
         
+        .task-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .task-list::-webkit-scrollbar-thumb {
+            background: #FF6B6B;
+            border-radius: 10px;
+        }
+        
         .task-item {
-            background: linear-gradient(95deg, #f8f9fa, #ffffff);
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 12px 0;
+            padding: 18px;
+            border-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
             transition: all 0.3s;
-            border-left: 4px solid #FF6B6B;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            border-left: 3px solid #FFD166;
         }
         
         .task-item:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
-        .task-content {
+        .task-info {
             display: flex;
             align-items: center;
             gap: 15px;
-            flex: 1;
+            flex: 2;
         }
         
         .task-checkbox {
@@ -287,186 +350,289 @@
             accent-color: #4ECDC4;
         }
         
-        .task-text {
-            font-size: 16px;
-            color: #333;
+        .task-details {
+            flex: 1;
         }
         
-        .task-text.completed {
+        .task-name {
+            font-size: 16px;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .task-name.completed {
             text-decoration: line-through;
-            color: #aaa;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .task-time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #FFD166;
+        }
+        
+        .no-time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
         }
         
         .delete-btn {
-            background: #FF6B6B;
+            background: rgba(255, 107, 107, 0.8);
             color: white;
             padding: 8px 20px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
         }
         
         .delete-btn:hover {
-            background: #ee5a24;
-            transform: scale(1.05);
+            background: #ff6b6b;
+            transform: scale(1.02);
         }
         
-        .empty-message {
+        .empty-state {
             text-align: center;
-            padding: 50px;
-            color: #999;
+            padding: 60px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Reminder Popup */
+        .reminder-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FFD166, #FF6B6B);
+            padding: 15px 25px;
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         
         @media (max-width: 900px) {
-            .stats-row {
+            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .charts-row {
-                grid-template-columns: 1fr;
-            }
-            .input-group {
+            .input-row {
                 flex-direction: column;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="bg-animation">
-    <div></div>
-    <div></div>
-    <div></div>
-</div>
+<!-- Floating Background Shapes -->
+<div class="shape shape-1"></div>
+<div class="shape shape-2"></div>
+<div class="shape shape-3"></div>
+<div class="shape shape-4"></div>
 
 <div class="dashboard">
-    <!-- Glass Header -->
-    <div class="glass-header">
-        <h1>✨ TaskFlow</h1>
-        <p>Your beautiful task management dashboard with live analytics</p>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <h1>📅 TaskFlow Scheduler</h1>
+            <p>Schedule, Remind, Complete - Stay Productive</p>
+        </div>
+        <div class="live-clock">
+            <div class="clock-time" id="currentTime">--:--:--</div>
+            <div class="clock-date" id="currentDate">Loading...</div>
+        </div>
     </div>
     
-    <!-- Stats Row -->
-    <div class="stats-row">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon">📋</div>
-            <div class="stat-number" id="totalTasks">0</div>
-            <div class="stat-label">Total Tasks</div>
+            <div class="stat-info">
+                <h3 id="totalTasks">0</h3>
+                <p>Total Tasks</p>
+            </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">✅</div>
-            <div class="stat-number" id="completedTasks">0</div>
-            <div class="stat-label">Completed</div>
+            <div class="stat-info">
+                <h3 id="completedTasks">0</h3>
+                <p>Completed</p>
+            </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">⏳</div>
-            <div class="stat-number" id="pendingTasks">0</div>
-            <div class="stat-label">Pending</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-number" id="completionRate">0%</div>
-            <div class="stat-label">Success Rate</div>
+            <div class="stat-info">
+                <h3 id="pendingTasks">0</h3>
+                <p>Pending</p>
+            </div>
         </div>
     </div>
     
-    <!-- 3 Circle Graphs Row -->
-    <div class="charts-row">
+    <!-- Single Chart - Task Distribution -->
+    <div class="chart-row">
         <div class="chart-card">
-            <div class="chart-title">🎯 Task Distribution</div>
+            <div class="chart-title">📊 Task Distribution</div>
             <canvas id="donutChart"></canvas>
         </div>
-        <div class="chart-card">
-            <div class="chart-title">⚡ Progress Circle</div>
-            <canvas id="progressCircle"></canvas>
+    </div>
+    
+    <!-- Add Task Section -->
+    <div class="add-task-section">
+        <div class="section-title">
+            <span>➕</span> Add New Task
         </div>
-        <div class="chart-card">
-            <div class="chart-title">🎨 Completion Gauge</div>
-            <canvas id="gaugeChart"></canvas>
+        <div class="input-row">
+            <input type="text" class="task-input" id="taskInput" placeholder="What needs to be done?">
+            <input type="time" class="time-input" id="taskTime" placeholder="Set time (optional)">
+            <button class="add-btn" onclick="addTask()">Add Task →</button>
+        </div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 10px;">
+            ⏰ Time is optional. Leave empty to create task without reminder.
         </div>
     </div>
     
-    <!-- Add Task -->
-    <div class="add-task-card">
-        <h3>➕ Create New Task</h3>
-        <div class="input-group">
-            <input type="text" id="taskInput" placeholder="What's on your mind?">
-            <button class="add-btn" onclick="addTask()">Add Task</button>
-        </div>
-    </div>
-    
-    <!-- Tasks List -->
-    <div class="tasks-card">
+    <!-- Tasks Section -->
+    <div class="tasks-section">
         <div class="tasks-header">
-            <h3>📝 Your Tasks</h3>
-            <div class="filter-group">
+            <div class="section-title" style="margin-bottom: 0;">
+                <span>📝</span> Your Tasks
+            </div>
+            <div class="filter-buttons">
                 <button class="filter-btn active" onclick="filterTasks('all', this)">All</button>
                 <button class="filter-btn" onclick="filterTasks('pending', this)">Pending</button>
                 <button class="filter-btn" onclick="filterTasks('completed', this)">Completed</button>
             </div>
         </div>
-        <ul id="taskList"></ul>
+        <ul class="task-list" id="taskList"></ul>
     </div>
 </div>
 
 <script>
     let allTasks = [];
     let currentFilter = 'all';
-    let donutChart, progressCircle, gaugeChart;
+    let donutChart;
     
-    // Add Task
+    // Clock Function
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('currentTime').innerHTML = `${hours}:${minutes}:${seconds}`;
+        
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerHTML = now.toLocaleDateString('en-US', options);
+        
+        checkReminders();
+    }
+    
+    function checkReminders() {
+        const now = new Date();
+        const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        allTasks.forEach(task => {
+            if (task.time && task.time === currentTime && !task.reminded && !task.completed) {
+                showReminderToast(task.text, task.time);
+                task.reminded = true;
+                fetch(`http://localhost:3000/task/${task._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ reminded: true })
+                });
+            }
+        });
+    }
+    
+    function showReminderToast(text, time) {
+        const toast = document.createElement('div');
+        toast.className = 'reminder-toast';
+        toast.innerHTML = `
+            <strong>🔔 Time's Up!</strong><br>
+            Task: ${text}<br>
+            Scheduled: ${time}
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+    
     async function addTask() {
         let text = document.getElementById("taskInput").value;
-        if (text.trim() === "") {
+        let time = document.getElementById("taskTime").value;
+        
+        if (!text.trim()) {
             alert("Please enter a task!");
             return;
         }
         
+        const taskData = { 
+            text: text, 
+            time: time || null,
+            completed: false, 
+            reminded: false 
+        };
+        
         await fetch("http://localhost:3000/task", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: text, completed: false })
+            body: JSON.stringify(taskData)
         });
         
         document.getElementById("taskInput").value = "";
+        document.getElementById("taskTime").value = "";
         loadTasks();
     }
     
-    // Load Tasks
     async function loadTasks() {
         let res = await fetch("http://localhost:3000/tasks");
         allTasks = await res.json();
         updateStats();
-        updateAllCharts();
+        updateChart();
         displayTasks();
     }
     
-    // Update Statistics
     function updateStats() {
         const total = allTasks.length;
-        const completed = allTasks.filter(t => t.completed === true).length;
+        const completed = allTasks.filter(t => t.completed).length;
         const pending = total - completed;
-        const rate = total === 0 ? 0 : Math.round((completed / total) * 100);
         
         document.getElementById('totalTasks').innerHTML = total;
         document.getElementById('completedTasks').innerHTML = completed;
         document.getElementById('pendingTasks').innerHTML = pending;
-        document.getElementById('completionRate').innerHTML = rate + '%';
     }
     
-    // Update All Charts
-    function updateAllCharts() {
-        const completed = allTasks.filter(t => t.completed === true).length;
+    function updateChart() {
+        const completed = allTasks.filter(t => t.completed).length;
         const pending = allTasks.length - completed;
         
-        // Destroy old charts
         if (donutChart) donutChart.destroy();
-        if (progressCircle) progressCircle.destroy();
-        if (gaugeChart) gaugeChart.destroy();
         
-        // Chart 1: Donut Chart
-        const ctx1 = document.getElementById('donutChart').getContext('2d');
-        donutChart = new Chart(ctx1, {
+        donutChart = new Chart(document.getElementById('donutChart'), {
             type: 'doughnut',
             data: {
                 labels: ['Completed', 'Pending'],
@@ -477,90 +643,64 @@
                     hoverOffset: 15
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
-            }
-        });
-        
-        // Chart 2: Progress Circle (using different type - pie)
-        const ctx2 = document.getElementById('progressCircle').getContext('2d');
-        const percent = allTasks.length === 0 ? 0 : (completed / allTasks.length) * 100;
-        progressCircle = new Chart(ctx2, {
-            type: 'pie',
-            data: {
-                labels: [`${Math.round(percent)}% Complete`, `${Math.round(100 - percent)}% Remaining`],
-                datasets: [{
-                    data: [percent, 100 - percent],
-                    backgroundColor: ['#FFD166', '#e0e0e0'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
-            }
-        });
-        
-        // Chart 3: Gauge Chart (doughnut with cutout)
-        const ctx3 = document.getElementById('gaugeChart').getContext('2d');
-        gaugeChart = new Chart(ctx3, {
-            type: 'doughnut',
-            data: {
-                labels: ['Achieved', 'Remaining'],
-                datasets: [{
-                    data: [completed, pending || 1],
-                    backgroundColor: ['#A8E6CF', '#FFD3B6'],
-                    borderWidth: 0,
-                    cutout: '60%'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { color: 'white', font: { size: 14 } } 
+                    }
+                }
             }
         });
     }
     
-    // Display Tasks
     function displayTasks() {
         let filtered = allTasks;
         if (currentFilter === 'pending') filtered = allTasks.filter(t => !t.completed);
         if (currentFilter === 'completed') filtered = allTasks.filter(t => t.completed);
         
+        filtered.sort((a, b) => {
+            if (!a.time && !b.time) return 0;
+            if (!a.time) return 1;
+            if (!b.time) return -1;
+            return a.time.localeCompare(b.time);
+        });
+        
         const list = document.getElementById('taskList');
         if (filtered.length === 0) {
-            list.innerHTML = '<div class="empty-message">✨ No tasks here. Add one above!</div>';
+            list.innerHTML = '<div class="empty-state">✨ No tasks yet. Add one above!</div>';
             return;
         }
         
         list.innerHTML = filtered.map(task => `
             <li class="task-item">
-                <div class="task-content">
+                <div class="task-info">
                     <input type="checkbox" class="task-checkbox" 
                            ${task.completed ? 'checked' : ''} 
                            onchange="toggleTask('${task._id}', this.checked)">
-                    <span class="task-text ${task.completed ? 'completed' : ''}">${escapeHtml(task.text)}</span>
+                    <div class="task-details">
+                        <div class="task-name ${task.completed ? 'completed' : ''}">${escapeHtml(task.text)}</div>
+                        ${task.time ? 
+                            `<div class="task-time-badge">⏰ ${task.time}</div>` : 
+                            `<div class="no-time-badge">📅 No time set</div>`
+                        }
+                    </div>
                 </div>
-                <button class="delete-btn" onclick="deleteTask('${task._id}')">🗑</button>
+                <button class="delete-btn" onclick="deleteTask('${task._id}')">Delete</button>
             </li>
         `).join('');
     }
     
-    // Toggle Task
     async function toggleTask(id, completed) {
         await fetch(`http://localhost:3000/task/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ completed: completed })
+            body: JSON.stringify({ completed })
         });
         loadTasks();
     }
     
-    // Delete Task
     async function deleteTask(id) {
         if (confirm('Delete this task?')) {
             await fetch(`http://localhost:3000/task/${id}`, { method: "DELETE" });
@@ -568,7 +708,6 @@
         }
     }
     
-    // Filter Tasks
     function filterTasks(filter, btn) {
         currentFilter = filter;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -576,14 +715,14 @@
         displayTasks();
     }
     
-    // Escape HTML
     function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
     
-    // Load on start
+    updateClock();
+    setInterval(updateClock, 1000);
     loadTasks();
 </script>
 
