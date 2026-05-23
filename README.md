@@ -12,7 +12,7 @@ A full-stack task management web application with beautiful dashboard, real-time
 - Mark Tasks Complete (with checkbox)
 - Delete Tasks
 - Live Statistics (Total, Completed, Pending)
-- Interactive Graphs (Donut Chart, Pie Chart, Gauge Chart)
+- Interactive Graphs (Donut Chart)
 - Filter Tasks (All / Pending / Completed)
 - Password Show/Hide Toggle
 - Responsive Design
